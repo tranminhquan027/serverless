@@ -107,11 +107,15 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         <Header as="h1">TODOs</Header>
 
         {this.renderCreateTodoInput()}
-
+        {this.renderTotalList()}
         {this.renderTodos()}
       </div>
     )
   }
+  renderTotalList() {
+    return (<h2>Todo List:  {this.state.todos.length} tasks</h2>)
+  }
+
 
   renderCreateTodoInput() {
     return (
