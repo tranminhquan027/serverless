@@ -5,7 +5,7 @@ import * as middy from 'middy'
 import * as uuid from "uuid";
 import { cors, httpErrorHandler } from 'middy/middlewares'
 import {AttachmentUtils} from '../../helpers/attachmentUtils'
-import {updateAttachmentUrl} from '../../helpers/todos'
+import {updateAttachmentUrl} from '../../businessLogic/todos'
 import { getUserId } from '../utils'
 
 const attachmentUtils = new AttachmentUtils();

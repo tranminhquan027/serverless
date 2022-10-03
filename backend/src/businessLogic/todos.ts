@@ -1,4 +1,4 @@
-import { TodosAccess } from './todosAccess'
+import { TodosAccess } from '../dataLayer/todosAccess'
 import { TodoItem } from '../models/TodoItem'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
