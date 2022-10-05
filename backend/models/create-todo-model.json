@@ -7,6 +7,9 @@
       "type": "string",
       "pattern": "^(?!\\s*$).+"
     },
+    "description": {
+      "type": "string"
+    },
     "dueDate": {
       "type": "string",
       "pattern": "^(?!\\s*$).+"
@@ -14,6 +17,7 @@
   },
   "required": [
     "name",
+    "description",
     "dueDate"
   ],
   "additionalProperties": false

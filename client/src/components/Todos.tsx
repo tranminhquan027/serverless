@@ -3,6 +3,7 @@ import { History } from 'history'
 import update from 'immutability-helper'
 import * as React from 'react'
 import {
+  Form,
   Button,
   Checkbox,
   Divider,
@@ -26,6 +27,7 @@ interface TodosProps {
 interface TodosState {
   todos: Todo[]
   newTodoName: string
+  newTodoDescription: string
   loadingTodos: boolean
 }
 
@@ -33,22 +35,27 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
+    newTodoDescription: '',
     loadingTodos: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTodoName: event.target.value })
   }
+  handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newTodoDescription: event.target.value })
+  }
 
   onEditButtonClick = (todoId: string) => {
     this.props.history.push(`/todos/${todoId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onTodoCreate = async (event: React.SyntheticEvent) => {
     try {
       const dueDate = this.calculateDueDate()
       const newTodo = await createTodo(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
+        description: this.state.newTodoDescription,
         dueDate
       })
       this.setState({
@@ -107,38 +114,45 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
         <Header as="h1">TODOs</Header>
 
         {this.renderCreateTodoInput()}
+        <br/>
         {this.renderTotalList()}
+        {this.renderHeader()}
         {this.renderTodos()}
       </div>
     )
   }
+
   renderTotalList() {
     return (<h2>Todo List:  {this.state.todos.length} tasks</h2>)
   }
 
-
   renderCreateTodoInput() {
     return (
-      <Grid.Row>
-        <Grid.Column width={16}>
-          <Input
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'New task',
-              onClick: this.onTodoCreate
-            }}
-            fluid
-            actionPosition="left"
-            placeholder="To change the world..."
-            onChange={this.handleNameChange}
-          />
-        </Grid.Column>
-        <Grid.Column width={16}>
-          <Divider />
-        </Grid.Column>
-      </Grid.Row>
+     <Form onSubmit={this.onTodoCreate}>
+       <Form.Field>
+         <label>Task Name:</label>
+         <Input
+           fluid
+           placeholder="To change the world..."
+           onChange={this.handleNameChange}
+         />
+       </Form.Field>
+       <Form.Field>
+        <label>Description:</label>
+        <Input
+          fluid
+          placeholder="Fill description of the task"
+          onChange={this.handleDescriptionChange}
+        />
+        </Form.Field>
+        <div>
+        <Button
+            type="submit"
+            color="green">
+            New Task
+          </Button>
+        </div>
+     </Form>
     )
   }
 
@@ -160,6 +174,30 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
+renderHeader() {
+    return (
+      <Grid>
+        <Grid.Row >
+          <Grid.Column width={1} verticalAlign="middle" >
+           <h5>Done</h5>
+          </Grid.Column>
+          <Grid.Column width={5} verticalAlign="middle">
+            <h5>Name</h5>
+          </Grid.Column>
+          <Grid.Column width={5} verticalAlign="middle">
+            <h5>Description</h5>
+          </Grid.Column>
+          <Grid.Column width={3} floated="right">
+           <h5>Due Date</h5>
+          </Grid.Column>
+          <Grid.Column width={1} floated="right">
+          </Grid.Column>
+          <Grid.Column width={1} floated="right">
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
+    )
+  }
   renderTodosList() {
     return (
       <Grid padded>
@@ -172,8 +210,11 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                   checked={todo.done}
                 />
               </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
+              <Grid.Column width={5} verticalAlign="middle">
                 {todo.name}
+              </Grid.Column>
+              <Grid.Column width={5} verticalAlign="middle">
+                {todo.description}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
                 {todo.dueDate}
